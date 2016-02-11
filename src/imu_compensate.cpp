@@ -36,6 +36,7 @@ private:
 			cnt ++;
 			if(cnt > 20)
 			{
+				if(cnt == 21) ROS_INFO("Start imu compensation");
 				double k = 0.01;
 				gyro_zero[0] = gyro_zero[0] * (1.0 - k) + imu.angular_velocity.x * k;
 				gyro_zero[1] = gyro_zero[1] * (1.0 - k) + imu.angular_velocity.y * k;
@@ -44,6 +45,7 @@ private:
 		}
 		else
 		{
+			if(cnt > 20) ROS_INFO("Stop imu compensation");
 			cnt = 0;
 		}
 		imu.angular_velocity.x -= gyro_zero[0];
