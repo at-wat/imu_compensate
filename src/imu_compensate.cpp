@@ -5,6 +5,7 @@
 
 #include <tf/transform_broadcaster.h>
 
+#include <filter.hpp>
 
 class imu_compensate
 {
@@ -16,6 +17,7 @@ private:
 		
 	nav_msgs::Odometry odom;
 
+	std::shared_ptr<filter> facc[3];
 	double gyro_zero[3];
 	int cnt;
 
@@ -51,6 +53,9 @@ private:
 		imu.angular_velocity.x -= gyro_zero[0];
 		imu.angular_velocity.y -= gyro_zero[1];
 		imu.angular_velocity.z -= gyro_zero[2];
+		imu.linear_acceleration.x = facc[0]->in(imu.linear_acceleration.x);
+		imu.linear_acceleration.y = facc[1]->in(imu.linear_acceleration.y);
+		imu.linear_acceleration.z = facc[2]->in(imu.linear_acceleration.z);
 		pub_imu.publish(imu);
 	}
 	void cb_odom(const nav_msgs::Odometry::Ptr &msg)
@@ -65,6 +70,9 @@ public:
 		sub_imu = nh.subscribe("imu_raw", 1, &imu_compensate::cb_imu, this);
 		pub_imu = nh.advertise<sensor_msgs::Imu>("imu", 2);
 		cnt = 0;
+		facc[0].reset(new filter(filter::FILTER_LPF, 10.0, 0.0));
+		facc[1].reset(new filter(filter::FILTER_LPF, 10.0, 0.0));
+		facc[2].reset(new filter(filter::FILTER_LPF, 10.0, 0.0));
 	}
 };
 

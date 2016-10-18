@@ -22,7 +22,7 @@ else()
 endif()
 
 
-include_directories(${catkin_INCLUDE_DIRS})
+include_directories(${catkin_INCLUDE_DIRS} src)
 
 add_executable(imu_compensate src/imu_compensate.cpp)
 target_link_libraries(imu_compensate ${catkin_LIBRARIES})
