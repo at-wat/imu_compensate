@@ -26,3 +26,6 @@ include_directories(${catkin_INCLUDE_DIRS} src)
 
 add_executable(imu_compensate src/imu_compensate.cpp)
 target_link_libraries(imu_compensate ${catkin_LIBRARIES})
+
+add_executable(dummy_imu src/dummy_imu.cpp)
+target_link_libraries(dummy_imu ${catkin_LIBRARIES})
